@@ -1,0 +1,14 @@
+
+followed: https://www.codershubb.com/build-hello-world-app-using-django-and-react/
+
+frontend
+1. install nodejs
+2. install npx
+3. npx create-react-app frontend
+4. npm run build
+
+backend
+1. pip install virtualenv
+2. virtualenv venv
+3. pip install Django
+4. django-admin startproject backend
