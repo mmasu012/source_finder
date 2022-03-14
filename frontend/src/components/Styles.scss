@@ -1,0 +1,70 @@
+$primary-color:#0f171e;
+$secondary-color:#ffffff;
+$font-primary: #1a242f;
+$font-secondary: #79b8f3;
+
+$logo-color: #ffb81c;
+$header-background-color: #003da5;
+
+
+
+.header{
+    background-color: $header-background-color;
+    height: 70px;
+    padding: 0px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    cursor: pointer;
+    color: ghostwhite;
+    
+}
+
+.logo{
+    display: flex;
+    color: $logo-color;
+
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: 700;
+}
+.Nav{   
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+ 
+}
+
+
+@media (max-width:450px){
+
+    .header{
+        background-color: $header-background-color;
+        height: 50px;
+        padding: 0px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-decoration: none;
+        cursor: pointer;
+        color: ghostwhite;
+        
+    }
+    
+    .logo{
+        display: flex;
+        color: $logo-color;
+    
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 700;
+    }
+    .Nav{   
+        display: flex;
+        text-decoration: none;
+        display: none;
+    }
+    
+
+}
