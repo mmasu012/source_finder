@@ -42,7 +42,7 @@ export default function PaperInfo() {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <div style={{ textAlign: 'center' }}>
-                        <h1>Read our white paper</h1>
+                        <h1>Read our paper</h1>
                     </div>
                 </Grid>
                 <Grid item xs={8}>

@@ -13,14 +13,14 @@ export default function Footer() {
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid item xs={4}>
                     <div style={{textAlign:'center'}}>
-                        <Link to="/home"><Nav.Link href="" style={{color: "#003da5" }}>Home</Nav.Link></Link>
+                        <Link to="/home"><Nav.Link href="/home" style={{color: "#003da5" }}>Home</Nav.Link></Link>
                     </div>
                 </Grid>
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                     <div style={{textAlign:'center'}}>
                         <Link to="/home"><Nav.Link href="" style={{color: "#003da5" }}>Developers</Nav.Link></Link>
                     </div>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={4}>
                     <div style={{textAlign:'center', color: "#003da5"}}>
                         Contact us
@@ -28,14 +28,14 @@ export default function Footer() {
                 </Grid>
                 <Grid item xs={4}>
                     <div style={{textAlign:'center'}}>
-                        <Link to="/home"><Nav.Link href="" style={{color: "#003da5" }}>Dataset</Nav.Link></Link>
+                        <Link to="/dataset"><Nav.Link href="/dataset" style={{color: "#003da5" }}>Dataset</Nav.Link></Link>
                     </div>
                 </Grid>
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                     <div style={{textAlign:'center'}}>
                         <Link to="/home"><Nav.Link href="" style={{color: "#003da5" }}>About</Nav.Link></Link>
                     </div>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={4}>
                     <div style={{textAlign:'center', color: "#003da5"}}>
                         <div><EmailRoundedIcon /> </div>

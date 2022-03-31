@@ -16,8 +16,7 @@ export default function HomePage() {
                 <Card style={{ borderRadius: 0, boxShadow: 'none'}}>
                     <CardContent style={{ backgroundColor:'#E1F3F8' }}>
                         <Typography gutterBottom variant="h4" component="div" align='center'>
-                            SourceFinder: Finding Malware Source-Code from Publicly Available
-                            Repositories
+                        SourceFinder: A large database of publicly available malware source-code
                         </Typography>
                     </CardContent>
                     <ImageSlider />
