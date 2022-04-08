@@ -9,7 +9,7 @@ export default function Footer() {
 
 
     return (
-        <div className='site-footer' style={{ backgroundColor: '#ffb81c', marginTop: '20px' }}>
+        <div className='site-footer' style={{ backgroundColor: '#ffb81c', marginTop: '20px', paddingTop: '40px' }}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid item xs={4}>
                     <div style={{textAlign:'center'}}>
@@ -36,7 +36,7 @@ export default function Footer() {
                         <Link to="/home"><Nav.Link href="" style={{color: "#003da5" }}>About</Nav.Link></Link>
                     </div>
                 </Grid> */}
-                <Grid item xs={4}>
+                {/* <Grid item xs={4}>
                     <div style={{textAlign:'center', color: "#003da5"}}>
                         <div><EmailRoundedIcon /> </div>
                     </div>
@@ -48,7 +48,7 @@ export default function Footer() {
                 </Grid>
                 <Grid item xs={4}></Grid>
                 <Grid item xs={4}></Grid>
-                <Grid item xs={4}></Grid>
+                <Grid item xs={4}></Grid> */}
                 
             </Grid>
         </div>

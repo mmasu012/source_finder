@@ -10,7 +10,133 @@ import Papa from 'papaparse';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
+import Link from '@mui/material/Link';
 import { darken, lighten } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import CircularProgress from '@mui/material/CircularProgress';
+
+function isOverflown(element) {
+    return (
+        element.scrollHeight > element.clientHeight ||
+        element.scrollWidth > element.clientWidth
+    );
+}
+
+const GridCellExpand = React.memo(function GridCellExpand(props) {
+    const { width, value } = props;
+    const wrapper = React.useRef(null);
+    const cellDiv = React.useRef(null);
+    const cellValue = React.useRef(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [showFullCell, setShowFullCell] = React.useState(false);
+    const [showPopper, setShowPopper] = React.useState(false);
+
+    const handleMouseEnter = () => {
+        const isCurrentlyOverflown = isOverflown(cellValue.current);
+        setShowPopper(isCurrentlyOverflown);
+        setAnchorEl(cellDiv.current);
+        setShowFullCell(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowFullCell(false);
+    };
+
+    React.useEffect(() => {
+        if (!showFullCell) {
+            return undefined;
+        }
+
+        function handleKeyDown(nativeEvent) {
+            // IE11, Edge (prior to using Bink?) use 'Esc'
+            if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
+                setShowFullCell(false);
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [setShowFullCell, showFullCell]);
+
+    
+    return (
+        <Box
+            ref={wrapper}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            sx={{
+                alignItems: 'center',
+                lineHeight: '24px',
+                width: .99,
+                height: 1,
+                position: 'relative',
+                display: 'flex',
+            }}
+        >
+            <Box
+                ref={cellDiv}
+                sx={{
+                    height: 1,
+                    width,
+                    display: 'block',
+                    position: 'absolute',
+                    top: 0,
+                }}
+            />
+            <Box
+                ref={cellValue}
+                sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+            >
+                {value}
+            </Box>
+            {showPopper && (
+                <Popper
+                    open={showFullCell && anchorEl !== null}
+                    anchorEl={anchorEl}
+                    style={{ width, marginLeft: -17 }}
+                >
+                    <Paper
+                        elevation={1}
+                        style={{ minHeight: wrapper.current.offsetHeight - 3 }}
+                        backgroundColor='black'
+                    >
+                        <Typography variant="body2" style={{ padding: 8 }}>
+                            {value}
+                        </Typography>
+                    </Paper>
+                </Popper>
+            )}
+        </Box>
+    );
+});
+
+GridCellExpand.propTypes = {
+    value: PropTypes.string.isRequired,
+    width: PropTypes.number.isRequired,
+};
+
+function renderCellExpand(params) {
+    return (
+        <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
+    );
+}
+
+renderCellExpand.propTypes = {
+    /**
+     * The column of the row that the current cell belongs to.
+     */
+    colDef: PropTypes.object.isRequired,
+    /**
+     * The cell value, but if the column has valueGetter, use getValue.
+     */
+    value: PropTypes.string.isRequired,
+};
+
 
 
 function escapeRegExp(value) {
@@ -32,6 +158,7 @@ export default function Dataset() {
     const [loadData, setLoadData] = React.useState();
     const [alert, setAlert] = React.useState();
     const [showTable, setShowTable] = React.useState();
+    const [initData, setInitData] = React.useState(true);
 
     const requestSearch = (searchValue) => {
         setSearchText(searchValue);
@@ -47,7 +174,7 @@ export default function Dataset() {
 
     React.useEffect(() => {
 
-        if (loadData) {
+        if (initData || loadData) {
 
             fetch('https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?title=' + searchInput)
                 .then(response => response.json())
@@ -57,14 +184,49 @@ export default function Dataset() {
                     var repo_data = {};
                     repo_data.columns = [
                         { field: "id", hide: true, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'repo_name', headerName: 'Repo', width: 200, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'author_text', headerName: 'Author', width: 200, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'star_count', headerName: 'Star', width: 100, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'fork_count', headerName: 'Fork', width: 100, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'watch_count', headerName: 'Watch', width: 100, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'topic', headerName: 'Topic', width: 200, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'family', headerName: 'Family', width: 200, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
-                        { field: 'platform', headerName: 'Platform', width: 200, headerClassName: 'super-app-theme--header', headerAlign: 'center' },
+                        {
+                            field: 'repo_name', renderCell: renderCellExpand, headerName: 'Repo', width: 300,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center',
+                            renderCell: (params) => (
+                                <Link href={"https://github.com/" + params.value}>
+                                    {params.value.split('/')[1]}
+                                </Link>
+                            ),
+                        },
+                        {
+                            field: 'author_text', headerName: 'Author', width: 200,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center',
+                            renderCell: (params) => (
+                                <Link href={"https://github.com/" + params.value}>
+                                    {params.value}
+                                </Link>
+                            ),
+                        },
+                        {
+                            field: 'star_count', headerName: 'Star', width: 100,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+                        {
+                            field: 'fork_count', headerName: 'Fork', width: 100,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+                        {
+                            field: 'watch_count', headerName: 'Watch', width: 100,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+
+                        {
+                            field: 'topic', renderCell: renderCellExpand, headerName: 'Topic', width: 400,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+                        {
+                            field: 'family', renderCell: renderCellExpand, headerName: 'Family', width: 400,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+                        {
+                            field: 'platform', renderCell: renderCellExpand, headerName: 'Platform', width: 400,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
                     ];
 
                     repo_data.rows = [];
@@ -90,18 +252,22 @@ export default function Dataset() {
                     setBackupRows(repo_data.rows);
                     setLoadData(false);
                     setShowTable(true);
+                    setInitData(false);
                 });
         }
     }, [loadData]);
 
-    const handleSearchButton = () => {
+    const handleSearchButton = (e) => {
 
-        if (searchInput.trim() === "") {
-            // alert('No string');
-            setAlert(true);
+        if (typeof e.keyCode === "undefined" || e.keyCode === 13) {
 
-        } else {
-            setLoadData(true);
+            if (searchInput.trim() === "") {
+                // alert('No string');
+                setAlert(true);
+
+            } else {
+                setLoadData(true);
+            }
         }
 
     }
@@ -116,7 +282,7 @@ export default function Dataset() {
                 <Stack spacing={2} direction="row">
                     <Box
                         sx={{
-                            width: 500,
+                            width: 800,
                             maxWidth: '100%',
                         }}
                     >
@@ -138,6 +304,11 @@ export default function Dataset() {
                     {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
 
                 </Stack>
+                
+                {(initData || loadData) && <Box sx={{ display: 'flex' }}>
+                            <CircularProgress />
+                        </Box>
+                }
 
                 {showTable &&
                     <Box sx={{
@@ -149,6 +320,7 @@ export default function Dataset() {
 
                     }}
                     >
+                        
                         <DataGrid
                             rows={rows}
                             columns={columns}

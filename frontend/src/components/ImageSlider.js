@@ -22,8 +22,8 @@ export default class ImageSlider extends Component {
 
   componentDidMount() {
 
-    const listOfImages = this.importAll(require.context('../Images/', false, /\.(png|jpe?g|svg)$/));
-
+    const listOfImages = this.importAll(require.context('../Images/image_slider', false, /\.(png|jpe?g|svg)$/));
+    
     const img = listOfImages.map(
       (image, index) =>    <img  src={image}  alt=""></img>
     )
