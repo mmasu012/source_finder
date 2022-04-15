@@ -36,7 +36,13 @@ const text = 'How would having access to malware source-code enable your researc
                 'can be retrieved from GitHub. For researchers interested in getting access to more data and our ' + 
                 'tools are cordially encouraged to contact us. \n' +  
                 '\n' + 
-                'We request that anyone who uses our platform cites our work as [citation info].\n' +
+                'We request that anyone who uses our platform cites our work as .\n' +
+                '@article{rokon2020sourcefinder,\n' +
+                    '   title={Sourcefinder: Finding malware source-code from publicly available repositories}, \n' +
+                    '   author={Rokon, Md Omar Faruk and Islam, Risul and Darki, Ahmad and Papalexakis, Vagelis E and Faloutsos, Michalis},\n' +
+                    '   journal={arXiv preprint arXiv:2005.14311},\n' +
+                    '   year={2020}\n' +
+                  '}\n' +
                 'Contact information: xxxx@xxxx';
 
 export default function PaperInfo() {

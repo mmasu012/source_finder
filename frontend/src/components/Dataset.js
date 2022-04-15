@@ -16,6 +16,14 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import CircularProgress from '@mui/material/CircularProgress';
+import Modal from '@mui/material/Modal';
+import { styled } from '@mui/material/styles';
+import Chip from '@mui/material/Chip';
+import TagFacesIcon from '@mui/icons-material/TagFaces';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MobileDateRangePicker from '@mui/lab/MobileDateRangePicker';
+import DesktopDateRangePicker from '@mui/lab/DesktopDateRangePicker';
 
 function isOverflown(element) {
     return (
@@ -63,7 +71,7 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
         };
     }, [setShowFullCell, showFullCell]);
 
-    
+
     return (
         <Box
             ref={wrapper}
@@ -103,7 +111,6 @@ const GridCellExpand = React.memo(function GridCellExpand(props) {
                     <Paper
                         elevation={1}
                         style={{ minHeight: wrapper.current.offsetHeight - 3 }}
-                        backgroundColor='black'
                     >
                         <Typography variant="body2" style={{ padding: 8 }}>
                             {value}
@@ -160,23 +167,92 @@ export default function Dataset() {
     const [showTable, setShowTable] = React.useState();
     const [initData, setInitData] = React.useState(true);
 
-    const requestSearch = (searchValue) => {
-        setSearchText(searchValue);
-        console.log(searchValue);
-        const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
-        const filteredRows = backupRows.filter((row) => {
-            return Object.keys(row).some((field) => {
-                return searchRegex.test(row['repo'].toString());
-            });
-        });
-        setRows(filteredRows);
+    // Chips
+    const ListItem = styled('li')(({ theme }) => ({
+        margin: theme.spacing(0.5),
+    }));
+
+    const [chipData, setChipData] = React.useState([
+        { key: 0, label: 'title' },
+        { key: 1, label: 'author' },
+        { key: 2, label: 'readme' },
+    ]);
+
+    const handleDelete = (chipToDelete) => () => {
+        setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
     };
+
+    const handleResetOptions = () => {
+        setChipData(
+            [
+                { key: 0, label: 'title' },
+                { key: 1, label: 'author' },
+                { key: 2, label: 'readme' },
+            ]
+        );
+    }
+
+    // Modal
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => {
+        setOpen(false);
+        console.log(chipData);
+    }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+
+    // // Date range
+    // const [value, setValue] = React.useState([null, null]);
+
+    // const requestSearch = (searchValue) => {
+    //     setSearchText(searchValue);
+    //     console.log(searchValue);
+    //     const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
+    //     const filteredRows = backupRows.filter((row) => {
+    //         return Object.keys(row).some((field) => {
+    //             return searchRegex.test(row['repo'].toString());
+    //         });
+    //     });
+    //     setRows(filteredRows);
+    // };
+
 
     React.useEffect(() => {
 
+        var url;
         if (initData || loadData) {
 
-            fetch('https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?title=' + searchInput)
+            if (initData) {
+                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?title=' + searchInput;
+                console.log(url);
+            } else {
+                var searchFields = '';
+                for (let i = 0; i < chipData.length; i++) {
+                    console.log(chipData[i].key);
+                    console.log(chipData[i].label);
+                    searchFields += chipData[i].key;
+                }
+                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput;
+                console.log(url);
+            }
+            
+
+            
+            
+            // fetch('https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?title=' + searchInput)
+            // fetch('btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + 'malware')
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
@@ -188,8 +264,8 @@ export default function Dataset() {
                             field: 'repo_name', renderCell: renderCellExpand, headerName: 'Repo', width: 300,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center',
                             renderCell: (params) => (
-                                <Link href={"https://github.com/" + params.value}>
-                                    {params.value.split('/')[1]}
+                                <Link href={"https://github.com/" + params.value.split('/')[1] + '/' + params.value.split('/')[0]} target={"_blank"} rel="noreferrer noopener">
+                                    {params.value.split('/')[0]}
                                 </Link>
                             ),
                         },
@@ -197,7 +273,7 @@ export default function Dataset() {
                             field: 'author_text', headerName: 'Author', width: 200,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center',
                             renderCell: (params) => (
-                                <Link href={"https://github.com/" + params.value}>
+                                <Link href={"https://github.com/" + params.value} target={"_blank"} rel="noreferrer noopener">
                                     {params.value}
                                 </Link>
                             ),
@@ -212,6 +288,20 @@ export default function Dataset() {
                         },
                         {
                             field: 'watch_count', headerName: 'Watch', width: 100,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+                        {
+                            field: 'creation_date', headerName: 'Creation Date', width: 200,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center',
+                            type: 'date',
+                        },
+                        {
+                            field: 'lastupdated_date', headerName: 'Last Modified Date', width: 200,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
+                        },
+
+                        {
+                            field: 'language', renderCell: renderCellExpand, headerName: 'Language', width: 400,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
 
@@ -234,11 +324,22 @@ export default function Dataset() {
 
                         var temp = {}
                         temp['id'] = i;
-                        temp['repo_name'] = (('repository_text' in data[i]) ? data[i]['repository_text'] : '');
+                        // temp['repo_name'] = (('repository_text' in data[i]) ? data[i]['repository_text'] : '');
+
+                        if (('repository_text' in data[i])) {
+                            temp['repo_name'] = data[i]['repository_text'].split('/')[1] + '/' + data[i]['repository_text'].split('/')[0];
+                        } else {
+
+                            temp['repo_name'] = '';
+                        }
+
                         temp['author_text'] = (('author_text' in data[i]) ? data[i]['author_text'] : '');
                         temp['star_count'] = (('starcount_int' in data[i])) ? data[i]['starcount_int'] : '';
                         temp['fork_count'] = (('forkcount_int' in data[i])) ? data[i]['forkcount_int'] : '';
                         temp['watch_count'] = (('watchcount_int' in data[i])) ? data[i]['watchcount_int'] : '';
+                        temp['creation_date'] = (('forkcount_int' in data[i])) ? data[i]['creation_date'] : '';
+                        temp['lastupdated_date'] = (('watchcount_int' in data[i])) ? data[i]['lastupdated_date'] : '';
+                        temp['language'] = (('language_text' in data[i])) ? data[i]['language_text'] : '';
                         temp['family'] = (('familiest_textlist' in data[i])) ? data[i]['familiest_textlist'] : '';
                         temp['platform'] = (('platforms_textlist' in data[i])) ? data[i]['platforms_textlist'] : '';
                         temp['topic'] = (('topics_textlist' in data[i])) ? data[i]['topics_textlist'] : '';
@@ -282,7 +383,7 @@ export default function Dataset() {
                 <Stack spacing={2} direction="row">
                     <Box
                         sx={{
-                            width: 800,
+                            width: 500,
                             maxWidth: '100%',
                         }}
                     >
@@ -301,13 +402,68 @@ export default function Dataset() {
                     >
                         Search
                     </Button>
+
                     {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
+                    <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
+                    <Modal
+                        keepMounted
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="keep-mounted-modal-title"
+                        aria-describedby="keep-mounted-modal-description"
+                    >
+                        <Box sx={style}>
+
+
+
+                            <Paper
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    p: 0.5,
+                                    m: 0,
+                                }}
+                                component="ul"
+                            >
+                                {chipData.map((data) => {
+                                    return (
+                                        <ListItem key={data.key}>
+                                            <Chip
+                                                label={data.label}
+                                                onDelete={handleDelete(data)}
+                                            />
+                                        </ListItem>
+                                    );
+                                })}
+                            </Paper>
+                            <Paper
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    p: 0.5,
+                                    m: 0,
+                                }}
+                                component="ul"
+                            >
+                                <Button variant="outlined"
+                                    onClick={handleResetOptions}
+                                >
+                                    Reset
+                                </Button>
+                            </Paper>
+
+                        </Box>
+                    </Modal>
 
                 </Stack>
-                
+
                 {(initData || loadData) && <Box sx={{ display: 'flex' }}>
-                            <CircularProgress />
-                        </Box>
+                    <CircularProgress />
+                </Box>
                 }
 
                 {showTable &&
@@ -320,7 +476,7 @@ export default function Dataset() {
 
                     }}
                     >
-                        
+
                         <DataGrid
                             rows={rows}
                             columns={columns}
