@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
 import Papa from 'papaparse';
@@ -19,11 +18,25 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-import TagFacesIcon from '@mui/icons-material/TagFaces';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import MobileDateRangePicker from '@mui/lab/MobileDateRangePicker';
-import DesktopDateRangePicker from '@mui/lab/DesktopDateRangePicker';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+// import { makeStyles } from '@material-ui/core/styles';
+import { GridToolbar } from '@mui/x-data-grid';
+
+
+import {
+    DataGrid,
+    GridToolbarContainer,
+    GridToolbarColumnsButton,
+    GridToolbarFilterButton,
+    GridToolbarExport,
+    GridToolbarDensitySelector,
+  } from '@mui/x-data-grid';
+import { getDate } from 'date-fns';
 
 function isOverflown(element) {
     return (
@@ -193,24 +206,25 @@ export default function Dataset() {
     }
 
     // Modal
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => {
-        setOpen(false);
-        console.log(chipData);
-    }
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-    };
+    const [open, setOpen] = React.useState(false);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+    const handleOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+
+    //   const useStyles = makeStyles(theme => ({
+    //     dialogPaper: {
+           
+    //         height : '400px'
+    //     },
+    // }));
 
     // // Date range
     // const [value, setValue] = React.useState([null, null]);
@@ -227,6 +241,32 @@ export default function Dataset() {
     //     setRows(filteredRows);
     // };
 
+
+    // Custom Toolbar
+    function CustomToolbar() {
+        return (
+          <GridToolbarContainer>
+            <GridToolbarColumnsButton />
+            <GridToolbarFilterButton />
+            <GridToolbarDensitySelector />
+            <GridToolbarExport printOptions={{ disableToolbarButton: true }} />
+          </GridToolbarContainer>
+        );
+      }
+    
+    // Value repo link
+    function getRepoUrl(params) {
+        return `${ params.row.repo_name }`;
+    }
+
+    function getCreationDate(params) {
+        
+        return `${ params.row.creation_date ? params.row.creation_date.split('T')[0] : '' }`
+    }
+
+    function getUpdateDate(params) {
+        return `${ params.row.lastupdated_date ?  params.row.lastupdated_date.split('T')[0] : '' }`
+    }
 
     React.useEffect(() => {
 
@@ -264,10 +304,11 @@ export default function Dataset() {
                             field: 'repo_name', renderCell: renderCellExpand, headerName: 'Repo', width: 300,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center',
                             renderCell: (params) => (
-                                <Link href={"https://github.com/" + params.value.split('/')[1] + '/' + params.value.split('/')[0]} target={"_blank"} rel="noreferrer noopener">
-                                    {params.value.split('/')[0]}
+                                <Link href={"https://github.com/" + params.row.author_text + '/' + params.value} target={"_blank"} rel="noreferrer noopener">
+                                    {params.value}
                                 </Link>
                             ),
+                            valueGetter: getRepoUrl,
                         },
                         {
                             field: 'author_text', headerName: 'Author', width: 200,
@@ -291,30 +332,32 @@ export default function Dataset() {
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
                         {
-                            field: 'creation_date', headerName: 'Creation Date', width: 200,
+                            field: 'creation_date', headerName: 'Creation Date', width: 150,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center',
-                            type: 'date',
+                            type: 'date', 
+                            valueGetter: getCreationDate,
                         },
                         {
-                            field: 'lastupdated_date', headerName: 'Last Modified Date', width: 200,
+                            field: 'lastupdated_date', headerName: 'Last Modified Date', width: 150,
+                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center',
+                            valueGetter: getUpdateDate,
+                        },
+
+                        {
+                            field: 'language', renderCell: renderCellExpand, headerName: 'Language', width: 200,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
 
                         {
-                            field: 'language', renderCell: renderCellExpand, headerName: 'Language', width: 400,
-                            headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
-                        },
-
-                        {
-                            field: 'topic', renderCell: renderCellExpand, headerName: 'Topic', width: 400,
+                            field: 'topic', renderCell: renderCellExpand, headerName: 'Topic', width: 200,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
                         {
-                            field: 'family', renderCell: renderCellExpand, headerName: 'Family', width: 400,
+                            field: 'family', renderCell: renderCellExpand, headerName: 'Family', width: 200,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
                         {
-                            field: 'platform', renderCell: renderCellExpand, headerName: 'Platform', width: 400,
+                            field: 'platform', renderCell: renderCellExpand, headerName: 'Platform', width: 200,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
                     ];
@@ -327,7 +370,8 @@ export default function Dataset() {
                         // temp['repo_name'] = (('repository_text' in data[i]) ? data[i]['repository_text'] : '');
 
                         if (('repository_text' in data[i])) {
-                            temp['repo_name'] = data[i]['repository_text'].split('/')[1] + '/' + data[i]['repository_text'].split('/')[0];
+                            // temp['repo_name'] = data[i]['repository_text'].split('/')[1] + '/' + data[i]['repository_text'].split('/')[0];
+                            temp['repo_name'] = data[i]['repository_text'].split('/')[1];
                         } else {
 
                             temp['repo_name'] = '';
@@ -380,7 +424,7 @@ export default function Dataset() {
                 direction="column"
                 justifyContent="center"
                 alignItems="center">
-                <Stack spacing={2} direction="row">
+                {showTable && <Stack spacing={2} direction="row">
                     <Box
                         sx={{
                             width: 500,
@@ -405,17 +449,17 @@ export default function Dataset() {
 
                     {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
                     <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
-                    <Modal
-                        keepMounted
+                    
+                    <Dialog
+                        fullScreen={fullScreen}
                         open={open}
                         onClose={handleClose}
-                        aria-labelledby="keep-mounted-modal-title"
-                        aria-describedby="keep-mounted-modal-description"
+                        aria-labelledby="responsive-dialog-title"
                     >
-                        <Box sx={style}>
-
-
-
+                        <DialogTitle id="responsive-dialog-title">
+                        {"Update Search Options"}
+                        </DialogTitle>
+                        <DialogContent>
                             <Paper
                                 sx={{
                                     display: 'flex',
@@ -424,6 +468,8 @@ export default function Dataset() {
                                     listStyle: 'none',
                                     p: 0.5,
                                     m: 0,
+                                    minHeight: 100,
+                                    padding: '25px'
                                 }}
                                 component="ul"
                             >
@@ -438,29 +484,22 @@ export default function Dataset() {
                                     );
                                 })}
                             </Paper>
-                            <Paper
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    flexWrap: 'wrap',
-                                    listStyle: 'none',
-                                    p: 0.5,
-                                    m: 0,
-                                }}
-                                component="ul"
-                            >
-                                <Button variant="outlined"
-                                    onClick={handleResetOptions}
-                                >
-                                    Reset
-                                </Button>
-                            </Paper>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button autoFocus onClick={handleResetOptions}>
+                            Reset
+                        </Button>
+                        <Button onClick={handleClose} autoFocus>
+                            Save Changes
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                    
 
-                        </Box>
-                    </Modal>
+                    
 
                 </Stack>
-
+}
                 {(initData || loadData) && <Box sx={{ display: 'flex' }}>
                     <CircularProgress />
                 </Box>
@@ -481,18 +520,13 @@ export default function Dataset() {
                             rows={rows}
                             columns={columns}
                             getRowClassName={(params) => `super-app-theme--row`}
-                            components={{ Toolbar: GridToolbar }}
-                        // componentsProps={{
-                        //     toolbar: {
-                        //         value: searchText,
-                        //         onChange: (event) => requestSearch(event.target.value),
-                        //         clearSearch: () => requestSearch(''),
-                        //     },
-                        // }}
+                            components={{ Toolbar: CustomToolbar }}
+                            disableSelectionOnClick
                         />
                     </Box>
                 }
             </Stack>
+            
         </div >
     );
 }
