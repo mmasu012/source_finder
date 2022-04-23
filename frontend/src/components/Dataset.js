@@ -26,6 +26,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 // import { makeStyles } from '@material-ui/core/styles';
 import { GridToolbar } from '@mui/x-data-grid';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 
 import {
@@ -35,7 +40,7 @@ import {
     GridToolbarFilterButton,
     GridToolbarExport,
     GridToolbarDensitySelector,
-  } from '@mui/x-data-grid';
+} from '@mui/x-data-grid';
 import { getDate } from 'date-fns';
 
 function isOverflown(element) {
@@ -188,11 +193,16 @@ export default function Dataset() {
     const [chipData, setChipData] = React.useState([
         { key: 0, label: 'title' },
         { key: 1, label: 'author' },
-        { key: 2, label: 'readme' },
+        { key: 2, label: 'topics' },
+        { key: 3, label: 'description' },
+        { key: 4, label: 'readme' },
+        { key: 5, label: 'filenames' },
+
     ]);
 
     const handleDelete = (chipToDelete) => () => {
         setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
+
     };
 
     const handleResetOptions = () => {
@@ -200,10 +210,57 @@ export default function Dataset() {
             [
                 { key: 0, label: 'title' },
                 { key: 1, label: 'author' },
-                { key: 2, label: 'readme' },
+                { key: 2, label: 'topics' },
+                { key: 3, label: 'description' },
+                { key: 4, label: 'readme' },
+                { key: 5, label: 'filenames' },
+                { key: 11, label: 'families' },
+                { key: 12, label: 'platforms' },
+                { key: 13, label: 'language' },
+
             ]
         );
+
+        setFromCreation(new Date('January 1, 1970 00:00:00'));
+        setToCreation(new Date());
+        setFromUpdate(new Date('January 1, 1970 00:00:00'));
+        setToUpdate(new Date());
+
     }
+
+    // 0 = repo title
+    // 1 = author name
+    // 2 = topics
+    // 3 = description
+    // 4 = readme (was 2 previously, now it is 4)
+    // 5 = filenames
+    // 6 = forkers
+    // 7 = stargazers
+    // 8 = watchers
+    // 9 = contributors
+    // a = issuers
+    // b = families
+    // c = platforms
+    // d = language
+
+    const option_api_parameter_mapper = {
+
+        0: 0,
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 4,
+        5: 5,
+        11: 'a',
+        12: 'b',
+        13: 'c',
+    }
+
+    // Date range
+    const [fromCreation, setFromCreation] = React.useState(new Date('January 1, 1970 00:00:00'));
+    const [toCreation, setToCreation] = React.useState(new Date());
+    const [fromUpdate, setFromUpdate] = React.useState(new Date('January 1, 1970 00:00:00'));
+    const [toUpdate, setToUpdate] = React.useState(new Date());
 
     // Modal
 
@@ -213,15 +270,15 @@ export default function Dataset() {
 
     const handleOpen = () => {
         setOpen(true);
-      };
-    
-      const handleClose = () => {
+    };
+
+    const handleClose = () => {
         setOpen(false);
-      };
+    };
 
     //   const useStyles = makeStyles(theme => ({
     //     dialogPaper: {
-           
+
     //         height : '400px'
     //     },
     // }));
@@ -245,31 +302,31 @@ export default function Dataset() {
     // Custom Toolbar
     function CustomToolbar() {
         return (
-          <GridToolbarContainer>
-            <GridToolbarColumnsButton />
-            <GridToolbarFilterButton />
-            <GridToolbarDensitySelector />
-            <GridToolbarExport printOptions={{ disableToolbarButton: true }} />
-          </GridToolbarContainer>
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+                <GridToolbarDensitySelector />
+                <GridToolbarExport printOptions={{ disableToolbarButton: true }} />
+            </GridToolbarContainer>
         );
-      }
-    
+    }
+
     // Value repo link
     function getRepoUrl(params) {
-        return `${ params.row.repo_name }`;
+        return `${params.row.repo_name}`;
     }
 
     function getCreationDate(params) {
-        
-        return `${ params.row.creation_date ? params.row.creation_date.split('T')[0] : '' }`
+
+        return `${params.row.creation_date ? params.row.creation_date.split('T')[0] : ''}`
     }
 
     function getUpdateDate(params) {
-        return `${ params.row.lastupdated_date ?  params.row.lastupdated_date.split('T')[0] : '' }`
+        return `${params.row.lastupdated_date ? params.row.lastupdated_date.split('T')[0] : ''}`
     }
 
     React.useEffect(() => {
-
+        // &crdateparams=1&crdatesearch=01062017
         var url;
         if (initData || loadData) {
 
@@ -283,13 +340,44 @@ export default function Dataset() {
                     console.log(chipData[i].label);
                     searchFields += chipData[i].key;
                 }
-                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput;
+
+                let fromCrDateVal = fromCreation.getDate();
+                let fromCrMonthVal = fromCreation.getMonth() + 1;
+                console.log(('0'+ fromCrDateVal).slice(-2), ('0'+ fromCrMonthVal).slice(-2), fromCreation.getFullYear() );
+
+                let toCrDateVal = toCreation.getDate();
+                let toCrMonthVal = toCreation.getMonth() + 1;
+                console.log(('0'+ toCrDateVal).slice(-2), ('0'+ toCrMonthVal).slice(-2), toCreation.getFullYear() );
+
+                let fromLuDateVal = fromUpdate.getDate();
+                let fromLuMonthVal = fromUpdate.getMonth() + 1;
+                console.log(('0'+ fromLuDateVal).slice(-2), ('0'+ fromLuMonthVal).slice(-2), fromUpdate.getFullYear() );
+
+                let toLuDateVal = toUpdate.getDate();
+                let toLuMonthVal = toUpdate.getMonth() + 1;
+                console.log(('0'+ toLuDateVal).slice(-2), ('0'+ toLuMonthVal).slice(-2), toUpdate.getFullYear() );
+
+                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput + 
+                                            '&crdateparams=3' + 
+                                                '&crlowerdate=' + 
+                                                    ('0'+ fromCrMonthVal).slice(-2) + ('0'+ fromCrDateVal).slice(-2) + fromCreation.getFullYear() +
+                                                '&crupperdate=' + 
+                                                    ('0'+ toCrMonthVal).slice(-2) + ('0'+ toCrDateVal).slice(-2) + toCreation.getFullYear() +
+                                            '&ludateparams=3' + 
+                                                '&lulowerdate=' + 
+                                                    ('0'+ fromLuMonthVal).slice(-2) + ('0'+ fromLuDateVal).slice(-2) + fromUpdate.getFullYear() +
+                                                '&luupperdate=' + 
+                                                    ('0'+ toLuMonthVal).slice(-2) + ('0'+ toLuDateVal).slice(-2) + toUpdate.getFullYear();
+
+                                                    
+                //  + 
+                //                                         '&crdateparams=1&crdateparams=+ fromCreationData;
                 console.log(url);
             }
-            
 
-            
-            
+
+
+
             // fetch('https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?title=' + searchInput)
             // fetch('btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + 'malware')
             fetch(url)
@@ -332,13 +420,13 @@ export default function Dataset() {
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center'
                         },
                         {
-                            field: 'creation_date', headerName: 'Creation Date', width: 150,
+                            field: 'creation_date', headerName: 'Creation', width: 150,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center',
-                            type: 'date', 
+                            type: 'date',
                             valueGetter: getCreationDate,
                         },
                         {
-                            field: 'lastupdated_date', headerName: 'Last Modified Date', width: 150,
+                            field: 'lastupdated_date', headerName: 'Last Update', width: 150,
                             headerClassName: 'super-app-theme--header', headerAlign: 'center', align: 'center',
                             valueGetter: getUpdateDate,
                         },
@@ -449,7 +537,7 @@ export default function Dataset() {
 
                     {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
                     <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
-                    
+
                     <Dialog
                         fullScreen={fullScreen}
                         open={open}
@@ -457,7 +545,7 @@ export default function Dataset() {
                         aria-labelledby="responsive-dialog-title"
                     >
                         <DialogTitle id="responsive-dialog-title">
-                        {"Update Search Options"}
+                            {"Update Search Options"}
                         </DialogTitle>
                         <DialogContent>
                             <Paper
@@ -484,22 +572,91 @@ export default function Dataset() {
                                     );
                                 })}
                             </Paper>
+                            <Paper
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    p: 0.5,
+                                    m: 0,
+                                    minHeight: 100,
+                                    padding: '25px'
+                                }}
+                                component="ul"
+                            >
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Stack spacing={2}>
+                                        <Stack direction="row" spacing={2}>
+                                            <DatePicker
+                                                disableFuture
+                                                label="Creation (From)"
+                                                openTo="year"
+                                                views={['year', 'month', 'day']}
+                                                value={fromCreation}
+                                                onChange={(newValue) => {
+                                                    setFromCreation(newValue);
+                                                }}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            />
+                                            <DatePicker
+                                                // disabled
+                                                disableFuture
+                                                label="Creation (To)"
+                                                openTo="year"
+                                                views={['year', 'month', 'day']}
+                                                value={toCreation}
+                                                onChange={(newValue) => {
+                                                    setToCreation(newValue);
+                                                }}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            />
+                                        </Stack>
+                                        <Stack direction="row" spacing={2}>
+                                            <DatePicker
+                                                
+                                                disableFuture
+                                                label="Last Update (From)"
+                                                openTo="year"
+                                                views={['year', 'month', 'day']}
+                                                value={fromUpdate}
+                                                onChange={(newValue) => {
+                                                    setFromUpdate(newValue);
+                                                }}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            />
+                                            <DatePicker
+                                                // disabled
+                                                disableFuture
+                                                label="Last Update (To)"
+                                                openTo="year"
+                                                views={['year', 'month', 'day']}
+                                                value={toUpdate}
+                                                onChange={(newValue) => {
+                                                    setToUpdate(newValue);
+                                                }}
+                                                renderInput={(params) => <TextField {...params} />}
+                                            />
+                                        </Stack>
+                                    </Stack>
+                                </LocalizationProvider>
+                            </Paper>
                         </DialogContent>
                         <DialogActions>
-                        <Button autoFocus onClick={handleResetOptions}>
-                            Reset
-                        </Button>
-                        <Button onClick={handleClose} autoFocus>
-                            Save Changes
-                        </Button>
+                            <Button autoFocus onClick={handleResetOptions}>
+                                Reset
+                            </Button>
+                            <Button onClick={handleClose} autoFocus>
+                                Save Changes
+                            </Button>
                         </DialogActions>
                     </Dialog>
-                    
 
-                    
+
+
 
                 </Stack>
-}
+                }
                 {(initData || loadData) && <Box sx={{ display: 'flex' }}>
                     <CircularProgress />
                 </Box>
@@ -526,7 +683,7 @@ export default function Dataset() {
                     </Box>
                 }
             </Stack>
-            
+
         </div >
     );
 }
