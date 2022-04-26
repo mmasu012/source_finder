@@ -23,6 +23,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import Grid from '@mui/material/Grid';
 
 import {
     DataGrid,
@@ -502,22 +503,26 @@ export default function Dataset() {
     }
 
     return (
-        <div style={{ marginTop: 10 }}>
-            <Stack spacing={2}
-                direction="column"
-                justifyContent="center"
-                alignItems="center">
+        <Grid container >
+            <Grid item xs={6}></Grid>
+                <Grid item xs={6}>
+                {(initData || loadData) && 
+                    <CircularProgress />
+                }
+                </Grid>
+            <Grid item xs={1}>
+            
+            </Grid>
+
+
+            <Grid item xs={10}>
                 {showTable &&
-
-                    <Stack spacing={2}
-                    direction="column"
-                    >
-
-                        <Typography  variant="h6">
+                    <div>
+                        <Typography variant="h6">
                             <Box sx={{ fontWeight: 'bold', m: 1 }}>
                                 Instructions to view and download dataset
                             </Box>
-                            <Typography  variant="subtitle1"  align='justify'>
+                            <Typography variant="subtitle1" align='justify'>
                                 <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
                                     <ListItemText primary="Type search string and click SEARCH button" />
                                     <ListItemText primary="Select SEARCH OPTIONS to define search parameters" />
@@ -526,50 +531,41 @@ export default function Dataset() {
                                 </Box>
                             </Typography>
                         </Typography>
-                        <Typography  variant="h6">
+                        <Typography variant="h6">
                             <Box sx={{ fontWeight: 'bold', m: 1 }}>
                                 Citation Request
                             </Box>
-                            <Typography  variant="subtitle1"  align='justify'>
-                        <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
-                            {citationRequest}
-                        </Box>
-                        <Box sx={{ color: 'blue', fontWeight: 'medium', m: 1, fontFamily: 'Monospace', width: 1000 }}>
-                            {citationText}
-                        </Box>
-                        </Typography>
+                            <Typography variant="subtitle1" align='justify'>
+                                <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
+                                    {citationRequest}
+                                </Box>
+                                <Box sx={{ color: 'blue', fontWeight: 'medium', m: 1, fontFamily: 'Monospace' }}>
+                                    {citationText}
+                                </Box>
+                            </Typography>
                         </Typography>
                         
+                        <Stack spacing={2} direction="row">
+
                             
+                                    <TextField fullWidth label="Search"
+                                        id="search_input"
+                                        value={searchInput}
+                                        onKeyDown={handleSearchButton}
+                                        onChange={(event) => {
+                                            setSearchInput(event.target.value);
+                                            setAlert(false);
+                                        }} />
+
+                            
+                            <Button variant="outlined"
+                                onClick={handleSearchButton} > 
+                                Search 
+                            </Button>
+                            {alert ? <Alert severity='error'>Error</Alert> : <></>}
+                            <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
+                        </Stack>
                         
-
-                    <Stack spacing={2} direction="row">
-
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <TextField fullWidth label="Search"
-                                id="search_input"
-                                value={searchInput}
-                                onKeyDown={handleSearchButton}
-                                onChange={(event) => {
-                                    setSearchInput(event.target.value);
-                                    setAlert(false);
-                                }} />
-
-                        </Box>
-                        <Button variant="outlined"
-                            onClick={handleSearchButton}
-                        >
-                            Search
-                        </Button>
-
-                        {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
-                        <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
-
                         <Dialog
                             fullScreen={fullScreen}
                             open={open}
@@ -683,21 +679,10 @@ export default function Dataset() {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-
-
-
-
-                    </Stack>
-                    </Stack>
-                }
-                {(initData || loadData) && <Box sx={{ display: 'flex' }}>
-                    <CircularProgress />
-                </Box>
-                }
-
-                {showTable &&
+                        {showTable &&
                     <Box sx={{
-                        height: 500, width: 1000,
+                        mt: 1,
+                        height: 500, 
                         '& .super-app-theme--header': {
                             backgroundColor: '#f0ede7',
                             fontWeight: '900',
@@ -713,13 +698,17 @@ export default function Dataset() {
                             components={{ Toolbar: CustomToolbar }}
                             disableSelectionOnClick
                         />
-                        
-                    </Box>
-                     
-                    
-                }
-            </Stack>
 
-        </div >
+                    </Box>
+
+
+                }
+                    </div>
+                }
+            </Grid>
+            <Grid item xs={1}>
+            </Grid>
+
+        </Grid>
     );
 }
