@@ -21,7 +21,8 @@ import { useTheme } from '@mui/material/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 import {
     DataGrid,
@@ -315,6 +316,11 @@ export default function Dataset() {
         return `${params.row.lastupdated_date ? params.row.lastupdated_date.split('T')[0] : ''}`
     }
 
+    // Citation
+    const citationRequest = 'We request that anyone who uses our platform cites our work as';
+    const citationText = 'Rokon, Md Omar Faruk, et al. \"{SourceFinder}: Finding Malware {Source-Code} from Publicly Available Repositories in {GitHub}.\" 23rd International Symposium on Research in Attacks, Intrusions and Defenses (RAID 2020). 2020.';
+
+
     React.useEffect(() => {
         // &crdateparams=1&crdatesearch=01062017
         var url;
@@ -333,33 +339,33 @@ export default function Dataset() {
 
                 let fromCrDateVal = fromCreation.getDate();
                 let fromCrMonthVal = fromCreation.getMonth() + 1;
-                console.log(('0'+ fromCrDateVal).slice(-2), ('0'+ fromCrMonthVal).slice(-2), fromCreation.getFullYear() );
+                console.log(('0' + fromCrDateVal).slice(-2), ('0' + fromCrMonthVal).slice(-2), fromCreation.getFullYear());
 
                 let toCrDateVal = toCreation.getDate();
                 let toCrMonthVal = toCreation.getMonth() + 1;
-                console.log(('0'+ toCrDateVal).slice(-2), ('0'+ toCrMonthVal).slice(-2), toCreation.getFullYear() );
+                console.log(('0' + toCrDateVal).slice(-2), ('0' + toCrMonthVal).slice(-2), toCreation.getFullYear());
 
                 let fromLuDateVal = fromUpdate.getDate();
                 let fromLuMonthVal = fromUpdate.getMonth() + 1;
-                console.log(('0'+ fromLuDateVal).slice(-2), ('0'+ fromLuMonthVal).slice(-2), fromUpdate.getFullYear() );
+                console.log(('0' + fromLuDateVal).slice(-2), ('0' + fromLuMonthVal).slice(-2), fromUpdate.getFullYear());
 
                 let toLuDateVal = toUpdate.getDate();
                 let toLuMonthVal = toUpdate.getMonth() + 1;
-                console.log(('0'+ toLuDateVal).slice(-2), ('0'+ toLuMonthVal).slice(-2), toUpdate.getFullYear() );
+                console.log(('0' + toLuDateVal).slice(-2), ('0' + toLuMonthVal).slice(-2), toUpdate.getFullYear());
 
-                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput + 
-                                            '&crdateparams=3' + 
-                                                '&crlowerdate=' + 
-                                                    ('0'+ fromCrMonthVal).slice(-2) + ('0'+ fromCrDateVal).slice(-2) + fromCreation.getFullYear() +
-                                                '&crupperdate=' + 
-                                                    ('0'+ toCrMonthVal).slice(-2) + ('0'+ toCrDateVal).slice(-2) + toCreation.getFullYear() +
-                                            '&ludateparams=3' + 
-                                                '&lulowerdate=' + 
-                                                    ('0'+ fromLuMonthVal).slice(-2) + ('0'+ fromLuDateVal).slice(-2) + fromUpdate.getFullYear() +
-                                                '&luupperdate=' + 
-                                                    ('0'+ toLuMonthVal).slice(-2) + ('0'+ toLuDateVal).slice(-2) + toUpdate.getFullYear();
+                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput +
+                    '&crdateparams=3' +
+                    '&crlowerdate=' +
+                    ('0' + fromCrMonthVal).slice(-2) + ('0' + fromCrDateVal).slice(-2) + fromCreation.getFullYear() +
+                    '&crupperdate=' +
+                    ('0' + toCrMonthVal).slice(-2) + ('0' + toCrDateVal).slice(-2) + toCreation.getFullYear() +
+                    '&ludateparams=3' +
+                    '&lulowerdate=' +
+                    ('0' + fromLuMonthVal).slice(-2) + ('0' + fromLuDateVal).slice(-2) + fromUpdate.getFullYear() +
+                    '&luupperdate=' +
+                    ('0' + toLuMonthVal).slice(-2) + ('0' + toLuDateVal).slice(-2) + toUpdate.getFullYear();
 
-                                                    
+
                 //  + 
                 //                                         '&crdateparams=1&crdateparams=+ fromCreationData;
                 console.log(url);
@@ -495,157 +501,194 @@ export default function Dataset() {
 
     }
 
-
     return (
         <div style={{ marginTop: 10 }}>
             <Stack spacing={2}
                 direction="column"
                 justifyContent="center"
                 alignItems="center">
-                {showTable && <Stack spacing={2} direction="row">
-                    <Box
-                        sx={{
-                            width: 500,
-                            maxWidth: '100%',
-                        }}
-                    >
-                        <TextField fullWidth label="Search"
-                            id="search_input"
-                            value={searchInput}
-                            onKeyDown={handleSearchButton}
-                            onChange={(event) => {
-                                setSearchInput(event.target.value);
-                                setAlert(false);
-                            }} />
+                {showTable &&
 
-                    </Box>
-                    <Button variant="outlined"
-                        onClick={handleSearchButton}
+                    <Stack spacing={2}
+                    direction="column"
                     >
-                        Search
-                    </Button>
 
-                    {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
-                    <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
+                        <Typography  variant="h6">
+                            <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                                Instructions to view and download dataset
+                            </Box>
+                            <Typography  variant="subtitle1"  align='justify'>
+                                <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
+                                    <ListItemText primary="Type search string and click SEARCH button" />
+                                    <ListItemText primary="Select SEARCH OPTIONS to define search parameters" />
+                                    <ListItemText primary="Filter results using the FILTERS button above the table header" />
+                                    <ListItemText primary="Download results using the EXPORT button" />
+                                </Box>
+                            </Typography>
+                        </Typography>
+                        <Typography  variant="h6">
+                            <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                                Citation Request
+                            </Box>
+                            <Typography  variant="subtitle1"  align='justify'>
+                        <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
+                            {citationRequest}
+                        </Box>
+                        <Box sx={{ color: 'blue', fontWeight: 'medium', m: 1, fontFamily: 'Monospace', width: 1000 }}>
+                            {citationText}
+                        </Box>
+                        </Typography>
+                        </Typography>
+                        
+                            
+                        
 
-                    <Dialog
-                        fullScreen={fullScreen}
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title"
-                    >
-                        <DialogTitle id="responsive-dialog-title">
-                            {"Update Search Options"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <Paper
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    flexWrap: 'wrap',
-                                    listStyle: 'none',
-                                    p: 0.5,
-                                    m: 0,
-                                    minHeight: 100,
-                                    padding: '25px'
-                                }}
-                                component="ul"
-                            >
-                                {chipData.map((data) => {
-                                    return (
-                                        <ListItem key={data.key}>
-                                            <Chip
-                                                label={data.label}
-                                                onDelete={handleDelete(data)}
-                                            />
-                                        </ListItem>
-                                    );
-                                })}
-                            </Paper>
-                            <Paper
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    flexWrap: 'wrap',
-                                    listStyle: 'none',
-                                    p: 0.5,
-                                    m: 0,
-                                    minHeight: 100,
-                                    padding: '25px'
-                                }}
-                                component="ul"
-                            >
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <Stack spacing={2}>
-                                        <Stack direction="row" spacing={2}>
-                                            <DatePicker
-                                                disableFuture
-                                                label="Creation (From)"
-                                                openTo="year"
-                                                views={['year', 'month', 'day']}
-                                                value={fromCreation}
-                                                onChange={(newValue) => {
-                                                    setFromCreation(newValue);
-                                                }}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
-                                            <DatePicker
-                                                // disabled
-                                                disableFuture
-                                                label="Creation (To)"
-                                                openTo="year"
-                                                views={['year', 'month', 'day']}
-                                                value={toCreation}
-                                                onChange={(newValue) => {
-                                                    setToCreation(newValue);
-                                                }}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
+                    <Stack spacing={2} direction="row">
+
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField fullWidth label="Search"
+                                id="search_input"
+                                value={searchInput}
+                                onKeyDown={handleSearchButton}
+                                onChange={(event) => {
+                                    setSearchInput(event.target.value);
+                                    setAlert(false);
+                                }} />
+
+                        </Box>
+                        <Button variant="outlined"
+                            onClick={handleSearchButton}
+                        >
+                            Search
+                        </Button>
+
+                        {alert ? <Alert severity='error'>No search parameter given</Alert> : <></>}
+                        <Button variant="outlined" onClick={handleOpen}>Search Options</Button>
+
+                        <Dialog
+                            fullScreen={fullScreen}
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="responsive-dialog-title"
+                        >
+                            <DialogTitle id="responsive-dialog-title">
+                                {"Select Search Options"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <Paper
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        flexWrap: 'wrap',
+                                        listStyle: 'none',
+                                        p: 0.5,
+                                        m: 0,
+                                        minHeight: 100,
+                                        padding: '25px'
+                                    }}
+                                    component="ul"
+                                >
+                                    {chipData.map((data) => {
+                                        return (
+                                            <ListItem key={data.key}>
+                                                <Chip
+                                                    label={data.label}
+                                                    onDelete={handleDelete(data)}
+                                                />
+                                            </ListItem>
+                                        );
+                                    })}
+                                </Paper>
+                                <Paper
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        flexWrap: 'wrap',
+                                        listStyle: 'none',
+                                        p: 0.5,
+                                        m: 0,
+                                        minHeight: 100,
+                                        padding: '25px'
+                                    }}
+                                    component="ul"
+                                >
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <Stack spacing={2}>
+                                            <Stack direction="row" spacing={2}>
+                                                <DatePicker
+                                                    disableFuture
+                                                    label="Creation (From)"
+                                                    openTo="year"
+                                                    views={['year', 'month', 'day']}
+                                                    value={fromCreation}
+                                                    onChange={(newValue) => {
+                                                        setFromCreation(newValue);
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                                <DatePicker
+                                                    // disabled
+                                                    disableFuture
+                                                    label="Creation (To)"
+                                                    openTo="year"
+                                                    views={['year', 'month', 'day']}
+                                                    value={toCreation}
+                                                    onChange={(newValue) => {
+                                                        setToCreation(newValue);
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </Stack>
+                                            <Stack direction="row" spacing={2}>
+                                                <DatePicker
+
+                                                    disableFuture
+                                                    label="Last Update (From)"
+                                                    openTo="year"
+                                                    views={['year', 'month', 'day']}
+                                                    value={fromUpdate}
+                                                    onChange={(newValue) => {
+                                                        setFromUpdate(newValue);
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                                <DatePicker
+                                                    // disabled
+                                                    disableFuture
+                                                    label="Last Update (To)"
+                                                    openTo="year"
+                                                    views={['year', 'month', 'day']}
+                                                    value={toUpdate}
+                                                    onChange={(newValue) => {
+                                                        setToUpdate(newValue);
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </Stack>
                                         </Stack>
-                                        <Stack direction="row" spacing={2}>
-                                            <DatePicker
-                                                
-                                                disableFuture
-                                                label="Last Update (From)"
-                                                openTo="year"
-                                                views={['year', 'month', 'day']}
-                                                value={fromUpdate}
-                                                onChange={(newValue) => {
-                                                    setFromUpdate(newValue);
-                                                }}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
-                                            <DatePicker
-                                                // disabled
-                                                disableFuture
-                                                label="Last Update (To)"
-                                                openTo="year"
-                                                views={['year', 'month', 'day']}
-                                                value={toUpdate}
-                                                onChange={(newValue) => {
-                                                    setToUpdate(newValue);
-                                                }}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
-                                        </Stack>
-                                    </Stack>
-                                </LocalizationProvider>
-                            </Paper>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button autoFocus onClick={handleResetOptions}>
-                                Reset
-                            </Button>
-                            <Button onClick={handleClose} autoFocus>
-                                Save Changes
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                                    </LocalizationProvider>
+                                </Paper>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button autoFocus onClick={handleResetOptions}>
+                                    Reset
+                                </Button>
+                                <Button onClick={handleClose} autoFocus>
+                                    Save Changes
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
 
 
 
 
-                </Stack>
+                    </Stack>
+                    </Stack>
                 }
                 {(initData || loadData) && <Box sx={{ display: 'flex' }}>
                     <CircularProgress />
@@ -670,7 +713,10 @@ export default function Dataset() {
                             components={{ Toolbar: CustomToolbar }}
                             disableSelectionOnClick
                         />
+                        
                     </Box>
+                     
+                    
                 }
             </Stack>
 

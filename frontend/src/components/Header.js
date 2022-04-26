@@ -4,6 +4,7 @@ import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import './Styles.scss';
+import { Grid } from '@material-ui/core';
 
 function Header() {
 
@@ -20,22 +21,27 @@ function Header() {
 
   // const { currency, setCurrency } = CryptoState()
 
-  return (<Container>
-    <Navbar className="header">
+  return (
+
+    <Grid container >
+      <Grid item xs={12} >
+
+        <Navbar className="header">
 
 
 
-      <Navbar.Brand className='logo' onClick={Homepage}>SourceFinder</Navbar.Brand>
-
-      <Nav className="Nav">
-        <Link to="/dataset"><Nav.Link href="/dataset" style={{ margin: "10px", color: "white" }}>Dataset</Nav.Link></Link>
-        {/* <Link to='/home'><Nav.Link href="" style={{ margin: "10px", color: "white" }}>Developers</Nav.Link></Link>
+          <Navbar.Brand className='logo' onClick={Homepage}>SourceFinder</Navbar.Brand>
+          
+          <Nav className="Nav">
+            <Link to="/dataset"><Nav.Link href="/dataset" style={{ margin: "10px", color: "white", fontWeight: "bold" }}>Largest Dataset</Nav.Link></Link>
+            {/* <Link to='/home'><Nav.Link href="" style={{ margin: "10px", color: "white" }}>Developers</Nav.Link></Link>
         <Link to='/home'><Nav.Link href="" style={{ margin: "10px", color: "white" }}>About</Nav.Link></Link> */}
-      </Nav>
+          </Nav>
 
-    </Navbar>
-
-  </Container>);
+        </Navbar>
+      </Grid>
+    </Grid>
+  );
 }
 
 export default Header;

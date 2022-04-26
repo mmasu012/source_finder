@@ -6,25 +6,28 @@ import ImageSlider from './ImageSlider';
 import '../App.scss';
 import Grid from '@mui/material/Grid';
 import PaperInfo from './PaperInfo';
+import Box from '@mui/material/Box';
 
 export default function HomePage() {
 
-
     return (
-        <div>
-            <div>
+        <Grid container >
+            <Grid item xs={12} >
                 <Card style={{ borderRadius: 0, boxShadow: 'none'}}>
-                    <CardContent style={{ backgroundColor:'#E1F3F8' }}>
-                        <Typography gutterBottom variant="h4" component="div" align='center'>
-                        Welcome to the largest reference database of malware source-code
+                    <CardContent style={{ backgroundColor:'white' }}>
+
+                        <Typography  variant="h4"  align='center'>
+                        <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                            Welcome to the largest reference database of malware source-code
+                        </Box>
                         </Typography>
                     </CardContent>
                     <ImageSlider />
                 </Card>
-            </div>
-            <div>
+            </Grid>
+            <Grid item xs={12} >
                 <PaperInfo />
-            </div>
-        </div>
+            </Grid>
+        </Grid>
     );
 };

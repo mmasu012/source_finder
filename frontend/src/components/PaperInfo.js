@@ -5,6 +5,10 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 import Image from '../Images/first_page.png';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 const Img = styled('img')({
     margin: 'auto',
@@ -34,16 +38,10 @@ const text = 'How would having access to malware source-code enable your researc
                 'in the peer-reviewed article below (RAID 2020). The platform supports a [light search capability] ' + 
                 'that provides the basic metadata of the repositories of interest. Note that the actual source-code ' +
                 'can be retrieved from GitHub. For researchers interested in getting access to more data and our ' + 
-                'tools are cordially encouraged to contact us. \n' +  
-                '\n' + 
-                'We request that anyone who uses our platform cites our work as .\n' +
-                '@article{rokon2020sourcefinder,\n' +
-                    '   title={Sourcefinder: Finding malware source-code from publicly available repositories}, \n' +
-                    '   author={Rokon, Md Omar Faruk and Islam, Risul and Darki, Ahmad and Papalexakis, Vagelis E and Faloutsos, Michalis},\n' +
-                    '   journal={arXiv preprint arXiv:2005.14311},\n' +
-                    '   year={2020}\n' +
-                  '}\n' +
-                'Contact information: xxxx@xxxx';
+                'tools are cordially encouraged to contact us. \n';
+                
+const citationRequest = 'We request that anyone who uses our platform cites our work as';
+const citationText = 'Rokon, Md Omar Faruk, et al. \"{SourceFinder}: Finding Malware {Source-Code} from Publicly Available Repositories in {GitHub}.\" 23rd International Symposium on Research in Attacks, Intrusions and Defenses (RAID 2020). 2020.';
 
 export default function PaperInfo() {
     return (
@@ -51,29 +49,84 @@ export default function PaperInfo() {
             sx={{
                 p: 2,
                 margin: 'auto',
-                maxWidth: 800,
+                maxWidth: '100%',
                 flexGrow: 1,
-                backgroundColor: (theme) =>
-                '#003da526'
+                // backgroundColor: (theme) =>
+                // '#003da526'
             }}
         >
 
             <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid item xs={8}>
                     <div style={{ textAlign: 'center' }}>
-                        <h1>Read our paper</h1>
+                        <h1>Read our paper
+                        <Link href={"https://www.usenix.org/system/files/raid20-rokon.pdf"} target={"_blank"} rel="noreferrer noopener">
+                            [PDF]
+                        </Link>
+                        <Link href='/dataset' target={"_blank"} rel="noreferrer noopener">
+                            [Dataset]
+                        </Link>
+                        </h1>
                     </div>
                 </Grid>
+                <Grid item xs={4}></Grid>
                 <Grid item xs={8}>
                     <div style={{ textAlign: 'justify', whiteSpace: 'pre-wrap' }}>
-                        <p>
-                            {text}
-                        </p>
+                        <Typography  variant="h6">
+                            <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                                What is SourceFinder
+                            </Box>
+                        </Typography>
+                        <Typography  variant="subtitle1"  align='justify'>
+                            <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
+                                {text}
+                            </Box>
+                        </Typography>
+                        <Typography  variant="h6">
+                            <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                                How to view and download our dataset
+                            </Box>
+                        </Typography>
+                        <Typography  variant="subtitle1"  align='justify'>
+                            <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
+                            <ListItem component="a" >
+                                <ListItemText primary="Go to this link" />
+                                <Link href='/dataset' target={"_blank"} rel="noreferrer noopener">
+                                    [Dataset]
+                                </Link>
+                            </ListItem>
+                            </Box>
+                        </Typography>
+                        <Typography  variant="h6">
+                            <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                                Citation Request
+                            </Box>
+                        </Typography>
+                        <Typography  variant="subtitle1"  align='justify'>
+                            <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
+                                {citationRequest}
+                            </Box>
+                            <Box sx={{ color: 'blue', fontWeight: 'medium', m: 1, fontFamily: 'Monospace' }}>
+                                {citationText}
+                            </Box>
+                        </Typography>
+                        <Typography  variant="h6">
+                            <Box sx={{ fontWeight: 'bold', m: 1 }}>
+                                Contact us
+                            </Box>
+                        </Typography>
+                        <Typography  variant="subtitle1"  align='justify'>
+                            <Box sx={{ fontWeight: 'bold', m: 1, fontFamily: 'Helvetica' }}>
+                                {"Contact information: mroko001@ucr.edu"}
+                            </Box>
+                        </Typography>
                     </div>
                 </Grid>
                 <Grid item xs={4}>
                     <ButtonBase >
-                        <Img alt="complex" src={Image} />
+                        <Link href={"https://www.usenix.org/system/files/raid20-rokon.pdf"} target={"_blank"} rel="noreferrer noopener">
+                            <Img alt="complex" src={Image} />
+                        </Link>
                     </ButtonBase>
                 </Grid>
             </Grid>

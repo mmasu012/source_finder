@@ -35,14 +35,16 @@ export default class ImageSlider extends Component {
 
   render() {
     return (
-      <div>
+      <div >
         <AliceCarousel
         items={this.state.galleryItems}
         responsive={this.responsive}
         autoPlay
         autoPlayInterval={3000}
-        mouseTrackingEnabled={true}
-          
+        disableDotsControls
+        disableButtonsControls
+        // mouseTrackingEnabled={true}
+
         />
       </div>
     )
