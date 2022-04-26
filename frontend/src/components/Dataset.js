@@ -320,7 +320,7 @@ export default function Dataset() {
     // Citation
     const citationRequest = 'We request that anyone who uses our platform cites our work as';
     const citationText = 'Rokon, Md Omar Faruk, et al. \"{SourceFinder}: Finding Malware {Source-Code} from Publicly Available Repositories in {GitHub}.\" 23rd International Symposium on Research in Attacks, Intrusions and Defenses (RAID 2020). 2020.';
-
+    
 
     React.useEffect(() => {
         // &crdateparams=1&crdatesearch=01062017
@@ -328,7 +328,7 @@ export default function Dataset() {
         if (initData || loadData) {
 
             if (initData) {
-                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?title=' + searchInput;
+                url = 'http://www.hackerchatter.org:8000/sourcefinder/api/repo/?title=' + searchInput;
                 console.log(url);
             } else {
                 var searchFields = '';
@@ -354,7 +354,7 @@ export default function Dataset() {
                 let toLuMonthVal = toUpdate.getMonth() + 1;
                 console.log(('0' + toLuDateVal).slice(-2), ('0' + toLuMonthVal).slice(-2), toUpdate.getFullYear());
 
-                url = 'https://btrev003.pythonanywhere.com/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput +
+                url = 'http://www.hackerchatter.org:8000/sourcefinder/api/repo/?fields=' + searchFields + '&search=' + searchInput +
                     '&crdateparams=3' +
                     '&crlowerdate=' +
                     ('0' + fromCrMonthVal).slice(-2) + ('0' + fromCrDateVal).slice(-2) + fromCreation.getFullYear() +
@@ -710,5 +710,7 @@ export default function Dataset() {
             </Grid>
 
         </Grid>
+
+        
     );
 }
