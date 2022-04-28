@@ -531,7 +531,7 @@ export default function Dataset() {
                                 </Box>
                             </Typography>
                         </Typography>
-                        <Typography variant="h6">
+                        {/* <Typography variant="h6">
                             <Box sx={{ fontWeight: 'bold', m: 1 }}>
                                 Citation Request
                             </Box>
@@ -543,7 +543,7 @@ export default function Dataset() {
                                     {citationText}
                                 </Box>
                             </Typography>
-                        </Typography>
+                        </Typography> */}
                         
                         <Stack spacing={2} direction="row">
 

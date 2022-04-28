@@ -33,7 +33,7 @@ function Header() {
           <Navbar.Brand className='logo' onClick={Homepage}>SourceFinder</Navbar.Brand>
           
           <Nav className="Nav">
-            <Link to="/dataset"><Nav.Link href="/dataset" style={{ margin: "10px", color: "white", fontWeight: "bold" }}>Largest Dataset</Nav.Link></Link>
+            <Link to="/dataset"><Nav.Link href="/dataset" style={{ margin: "10px", color: "white", fontWeight: "bold" }}>Dataset</Nav.Link></Link>
             {/* <Link to='/home'><Nav.Link href="" style={{ margin: "10px", color: "white" }}>Developers</Nav.Link></Link>
         <Link to='/home'><Nav.Link href="" style={{ margin: "10px", color: "white" }}>About</Nav.Link></Link> */}
           </Nav>

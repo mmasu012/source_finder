@@ -16,7 +16,7 @@ export default function Footer() {
                         <Link to="/home"><Nav.Link href="/home" style={{color: "white", fontWeight: 'bold' }}>Home</Nav.Link></Link>
                     </div>
                     <div style={{textAlign:'center', marginTop: '10px'}}>
-                        <Link to="/dataset"><Nav.Link href="/home" style={{color: "white", fontWeight: 'bold' }}>Largest Dataset</Nav.Link></Link>
+                        <Link to="/dataset"><Nav.Link href="/home" style={{color: "white", fontWeight: 'bold' }}>Dataset</Nav.Link></Link>
                     </div>
                 </Grid>
                 <Grid item xs={4}></Grid>
