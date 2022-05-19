@@ -128,7 +128,7 @@ export default function PaperInfo() {
                         </Typography>
                         <Typography variant="h6">
                             <Box sx={{ fontWeight: 'bold', m: 1 }}>
-                                How to view and download our dataset
+                                How to view and download our database
                             </Box>
                         </Typography>
                         <Typography variant="subtitle1" align='justify'>
