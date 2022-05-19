@@ -13,10 +13,10 @@ export default function Footer() {
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid item xs={4}>
                     <div style={{textAlign:'center'}}>
-                        <Link to="/home"><Nav.Link href="/home" style={{color: "white", fontWeight: 'bold' }}>Home</Nav.Link></Link>
+                        <Link to="/sourcefinder"><Nav.Link href="/sourcefinder" style={{color: "white", fontWeight: 'bold' }}>Home</Nav.Link></Link>
                     </div>
                     <div style={{textAlign:'center', marginTop: '10px'}}>
-                        <Link to="/database"><Nav.Link href="/home" style={{color: "white", fontWeight: 'bold' }}>Database</Nav.Link></Link>
+                        <Link to="/database"><Nav.Link href="/sourcefinder" style={{color: "white", fontWeight: 'bold' }}>Database</Nav.Link></Link>
                     </div>
                 </Grid>
                 <Grid item xs={4}></Grid>
