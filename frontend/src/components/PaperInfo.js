@@ -135,8 +135,8 @@ export default function PaperInfo() {
                             <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>
                                 {/* <ListItem component="a" >
                                 <ListItemText primary="Go to this link" /> */}
-                                <Link href='/dataset' target={"_blank"} rel="noreferrer noopener">
-                                    [Dataset]
+                                <Link href='/database' target={"_blank"} rel="noreferrer noopener">
+                                    [Database]
                                 </Link>
                                 {/* </ListItem> */}
                             </Box>

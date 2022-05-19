@@ -520,7 +520,7 @@ export default function Dataset() {
                     <div>
                         <Typography variant="h6">
                             <Box sx={{ fontWeight: 'bold', m: 1 }}>
-                                Instructions to view and download dataset
+                                Instructions to view and download database
                             </Box>
                             <Typography variant="subtitle1" align='justify'>
                                 <Box sx={{ fontWeight: 'medium', m: 1, fontFamily: 'Helvetica' }}>

@@ -15,8 +15,8 @@ function App() {
       <div className='container page-wrap'>
         <Routes>
           <Route path="/" element={<Homepage />} exact />
-          <Route path="/home" element={<Homepage />} exact />
-          <Route path="/dataset" element={<Dataset />} exact />
+          <Route path="/sourcefinder" element={<Homepage />} exact />
+          <Route path="/database" element={<Dataset />} exact />
         </Routes>
       </div>
       <Footer />
